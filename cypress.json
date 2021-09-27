@@ -1,0 +1,8 @@
+{
+  "baseUrl": "https://test.fishweb.ru",
+  "ignoreTestFiles": "**/examples/**",
+  "env": {
+    "siteName": "Участок для автотестов 1",
+    "tankName": "Садок для автотестов 1"
+  }
+}
