@@ -32,7 +32,7 @@ Cypress.Commands.add("login", () => {
       password: "testAnton101220",
     },
   }).then((resp) => {
-    expect(resp.status).to.eq(200);
+    expect(resp.status).to.eq(200)
   })
 })
 let siteID
@@ -65,18 +65,23 @@ Cypress.Commands.add("createSiteAndTankByAPI", () => {
   */
 })
 Cypress.Commands.add("removeSiteAndTankByAPI", () => {
-  cy.request({
-    method: "DELETE",
-    url: `/api/core/tanks/${tankID}`
-  }).then((response) => {
-    expect(response.status).to.eq(200)
+  // cy.getCookies().then( (cookies) => {
+  //   console.log(cookies)
     cy.request({
       method: "DELETE",
-      url: `/api/core/sites/${siteID}`
+      url: `/api/core/tanks/${tankID}`
+      // ,
+      // cookie: `${cookies}`
     }).then((response) => {
       expect(response.status).to.eq(200)
-    })
+      cy.request({
+        method: "DELETE",
+        url: `/api/core/sites/${siteID}`
+      }).then((response) => {
+        expect(response.status).to.eq(200)
+      })
   })
+  // })
   /*
   //Код для удаление участка через UI. В самом конце ошибка возникает. Невозможно удалить участок.
   cy.visit("/")
