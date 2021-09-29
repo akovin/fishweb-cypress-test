@@ -1,6 +1,6 @@
 export class checkAllIndicators {
   //Проверка показателей полностью
-  checkIndicatorsFull(siteName, tankName, fishWeight, amount, biomass) {
+  checkIndicators(siteName, tankName, fishWeight, amount, biomass) {
     cy.visit('/')
     cy.intercept('GET', '/api/core/sites/**').as('siteInfo')
     cy.contains(siteName).click({ force: true }).wait('@siteInfo')

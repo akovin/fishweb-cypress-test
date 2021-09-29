@@ -16,15 +16,15 @@ describe("biomass and fishweight calculation after stocking", () => {
     })
   })
   it("stocking in an empty tank", () => {
-    checkIndicators.checkIndicatorsFull(...siteAndTankNames , '---', '---', '---')
+    checkIndicators.checkIndicators(...siteAndTankNames , '---', '---', '---')
     enterIndicators.stocking(siteID, tankID, 5000, 250)
-    checkIndicators.checkIndicatorsFull(...siteAndTankNames, '0,05', '5 000', '250')
+    checkIndicators.checkIndicators(...siteAndTankNames, '0,05', '5 000', '250')
   })
   it("stocking in not empty tank, the same fishweight", () => {
     enterIndicators.stocking(siteID, tankID, 5000, 250)
-    checkIndicators.checkIndicatorsFull(...siteAndTankNames, '0,05', '5 000', '250')
+    checkIndicators.checkIndicators(...siteAndTankNames, '0,05', '5 000', '250')
     enterIndicators.stocking(siteID, tankID, 300, 15)
-    checkIndicators.checkIndicatorsFull(...siteAndTankNames, '0,05', '5 300', '265')
+    checkIndicators.checkIndicators(...siteAndTankNames, '0,05', '5 300', '265')
   })
   it("stocking in not empty tank, another fishweight", () => {
     // //Очищаем все данные прошлых тестов
@@ -35,11 +35,11 @@ describe("biomass and fishweight calculation after stocking", () => {
     //   siteID = siteIDReturned
     //   cy.createTankByAPI(Cypress.env('tankNameFirst'), siteID).then((tankIDReturned) => {
         // tankID = tankIDReturned
-        checkIndicators.checkIndicatorsFull(...siteAndTankNames, '---', '---', '---')
+        checkIndicators.checkIndicators(...siteAndTankNames, '---', '---', '---')
         enterIndicators.stocking(siteID, tankID, 5000, 250)
-        checkIndicators.checkIndicatorsFull(...siteAndTankNames, '0,05', '5 000', '250')
+        checkIndicators.checkIndicators(...siteAndTankNames, '0,05', '5 000', '250')
         enterIndicators.stocking(siteID, tankID, 300, 21)
-        checkIndicators.checkIndicatorsFull(...siteAndTankNames, '0,051', '5 300', '271')
+        checkIndicators.checkIndicators(...siteAndTankNames, '0,051', '5 300', '271')
       })
   //   })
   // })
