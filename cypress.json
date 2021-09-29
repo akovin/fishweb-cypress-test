@@ -3,6 +3,7 @@
   "ignoreTestFiles": "**/examples/**",
   "env": {
     "siteName": "Участок для автотестов 1",
-    "tankName": "Садок для автотестов 1"
+    "tankNameFirst": "Садок для автотестов 1",
+    "tankNameSecond": "Садок для автотестов 2"
   }
 }

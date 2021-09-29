@@ -23,6 +23,9 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+let siteID
+let tankID
+
 Cypress.Commands.add("login", () => {
   cy.request({
     method: "POST",
@@ -35,61 +38,42 @@ Cypress.Commands.add("login", () => {
     expect(resp.status).to.eq(200)
   })
 })
-let siteID
-let tankID
-Cypress.Commands.add("createSiteAndTankByAPI", () => {
+Cypress.Commands.add("createSiteByAPI", (siteName) => {
   cy.request({
     method: "POST",
     url: "/api/core/sites",
-    body: { name: `${Cypress.env('siteName')}`, color: "#0288D1" },
+    body: { name: siteName, color: "#0288D1" },
+  })
+    .then((response) => {
+      expect(response.status).to.eq(200)
+      siteID = response.body
+      return siteID
+    })
+})
+Cypress.Commands.add("createTankByAPI", (tankName, siteID) => {
+  cy.request({
+    method: "POST",
+    url: "/api/core/tanks",
+    body: { name: tankName, siteId: siteID, virtualSiteIds: [] },
   }).then((response) => {
     expect(response.status).to.eq(200)
-    siteID = response.body
-    cy.request({
-      method: "POST",
-      url: "/api/core/tanks",
-      body: {name: `${Cypress.env('tankName')}`, siteId: `${siteID}`, virtualSiteIds: []},
-    }).then((response) => {
-      expect(response.status).to.eq(200)
-      tankID = response.body
-      return [siteID, tankID]
-    })
+    tankID = response.body
+    return tankID
   })
-  /*
-  //Полностью рабочий код по созданию участка через UI
-  cy.visit("/")
-  cy.get('[class="edit-map-btn"]').click()
-  cy.contains("Создать участок").click()
-  cy.get(':nth-child(3) > .el-card__body .el-input__inner').type('Участок для автотестов 1')
-  cy.get(':nth-child(3) > .el-card__body button').contains('Сохранить').click() 
-  */
 })
-Cypress.Commands.add("removeSiteAndTankByAPI", () => {
-  // cy.getCookies().then( (cookies) => {
-  //   console.log(cookies)
+Cypress.Commands.add("removeSiteByAPI", (siteID) => {
     cy.request({
       method: "DELETE",
-      url: `/api/core/tanks/${tankID}`
-      // ,
-      // cookie: `${cookies}`
+      url: `/api/core/sites/${siteID}`
     }).then((response) => {
       expect(response.status).to.eq(200)
-      cy.request({
-        method: "DELETE",
-        url: `/api/core/sites/${siteID}`
-      }).then((response) => {
-        expect(response.status).to.eq(200)
-      })
+    })
+})
+Cypress.Commands.add("removeTankByAPI", (tankID) => {
+  cy.request({
+    method: "DELETE",
+    url: `/api/core/tanks/${tankID}`
+  }).then((response) => {
+    expect(response.status).to.eq(200)
   })
-  // })
-  /*
-  //Код для удаление участка через UI. В самом конце ошибка возникает. Невозможно удалить участок.
-  cy.visit("/")
-  cy.intercept('GET', 'api/core/factory/map').as('getArea')
-  cy.get('[class="edit-map-btn"]').click().wait('@getArea')
-  cy.contains('Карта хозяйства').should('be.visible')
-  cy.contains('Участок для автотестов 1').should('exist').click()
-  cy.get('[style=""] > .el-button').should('be.visible').scrollIntoView().click()
-  cy.get('.el-message-box__btns .el-button--primary').click()
-  */
 })
