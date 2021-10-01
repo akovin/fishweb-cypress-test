@@ -7,7 +7,7 @@ export class checkAllIndicators {
     cy.contains(tankName).click({ force: true })
     cy.get('.tank-metrics > :nth-child(3) > .el-card__body > :nth-child(1) .brief-value').should('be.visible').should('contain', fishWeight)
     cy.get('.tank-metrics > :nth-child(3) > .el-card__body > :nth-child(2) .brief-value').should('be.visible').invoke('text').invoke('replace', /\u00a0/g, ' ').should('contain', amount)
-    cy.get('.tank-metrics > :nth-child(3) > .el-card__body > :nth-child(3) .brief-value').should('contain', biomass)
+    cy.get('.tank-metrics > :nth-child(3) > .el-card__body > :nth-child(3) .brief-value').invoke('text').invoke('replace', /\u00a0/g, ' ').should('contain', biomass)
   }
 }
 
@@ -29,7 +29,7 @@ export class enterAllIndicators {
     cy.intercept('GET', `/api/core/indicators/tank/${tankID}*`).as('tankInfo')
     cy.get('[data-test="indicator-form__submit-button"]').click().wait('@tankInfo')
   }
-  //siteID, tankIDFirst, tankIDSecond, amount, biomass
+  //Пересадка
   moving(siteID, tankIDFirst, tankIDSecond, amount, biomass) {
     cy.visit('/')
     cy.get('.menu__indicators > .el-button').click()

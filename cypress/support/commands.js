@@ -33,7 +33,6 @@ Cypress.Commands.add("removeAllTestEntities", () => {
   }).then((response) => {
     expect(response.status).to.eq(200)
     const resultTestSites = response.body.filter(site => site.name === `${Cypress.env('siteNameTest')}`)
-    console.log('resultSTestites', resultTestSites)
     cy.request({
       method: "GET",
       url: "/api/core/tanks"
