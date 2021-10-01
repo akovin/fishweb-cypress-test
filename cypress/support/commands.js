@@ -26,6 +26,47 @@
 let siteID
 let tankID
 
+Cypress.Commands.add("removeAllTestEntities", () => {
+  cy.request({
+    method: "GET",
+    url: "/api/core/sites"
+  }).then((response) => {
+    expect(response.status).to.eq(200)
+    const resultTestSites = response.body.filter(site => site.name === `${Cypress.env('siteNameTest')}`)
+    console.log('resultSTestites', resultTestSites)
+    cy.request({
+      method: "GET",
+      url: "/api/core/tanks"
+    }).then((response) => {
+      expect(response.status).to.eq(200)
+      const resultTanks = response.body
+      const resultTestSitesIDs = []
+      resultTestSites.map(site => {
+        resultTestSitesIDs.push(site.id)
+      })
+      const resultTestTanksFinal = resultTanks.filter(tank => resultTestSitesIDs.includes(tank.siteId))
+      const promiseTanksRemove = resultTestTanksFinal.map(tank => {
+        cy.request({
+          method: "DELETE",
+          url: `/api/core/tanks/${tank.id}`
+        }).then((response) => {
+          expect(response.status).to.eq(200)
+        })
+      })
+      Promise.all(promiseTanksRemove).then(() => {
+        resultTestSitesIDs.map(siteID => {
+          cy.request({
+            method: "DELETE",
+            url: `/api/core/sites/${siteID}`
+          }).then((response) => {
+            expect(response.status).to.eq(200)
+          })
+        })
+      })
+    })
+  })
+})
+
 Cypress.Commands.add("login", () => {
   cy.request({
     method: "POST",
@@ -34,8 +75,8 @@ Cypress.Commands.add("login", () => {
       login: "testeranton",
       password: "testAnton101220",
     },
-  }).then((resp) => {
-    expect(resp.status).to.eq(200)
+  }).then((response) => {
+    expect(response.status).to.eq(200)
   })
 })
 Cypress.Commands.add("createSiteByAPI", (siteName) => {
@@ -62,12 +103,12 @@ Cypress.Commands.add("createTankByAPI", (tankName, siteID) => {
   })
 })
 Cypress.Commands.add("removeSiteByAPI", (siteID) => {
-    cy.request({
-      method: "DELETE",
-      url: `/api/core/sites/${siteID}`
-    }).then((response) => {
-      expect(response.status).to.eq(200)
-    })
+  cy.request({
+    method: "DELETE",
+    url: `/api/core/sites/${siteID}`
+  }).then((response) => {
+    expect(response.status).to.eq(200)
+  })
 })
 Cypress.Commands.add("removeTankByAPI", (tankID) => {
   cy.request({

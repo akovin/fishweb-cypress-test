@@ -2,8 +2,8 @@
   "baseUrl": "https://test.fishweb.ru",
   "ignoreTestFiles": "**/examples/**",
   "env": {
-    "siteName": "Участок для автотестов 1",
-    "tankNameFirst": "Садок для автотестов 1",
-    "tankNameSecond": "Садок для автотестов 2"
+    "siteNameTest": "Участок для автотестов 1",
+    "tankNameTestFirst": "Садок для автотестов 1",
+    "tankNameTestSecond": "Садок для автотестов 2"
   }
 }
