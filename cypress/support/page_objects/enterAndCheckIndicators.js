@@ -44,9 +44,25 @@ export class enterAllIndicators {
     cy.get('[data-test="indicator-input"]').clear().type(amount)
     cy.get('[for="tankId"]').click()
     cy.get('[data-test="fish-biomass-delta-input"] input').clear().type(biomass)
-    cy.get('[for="tankId"]').click()
     cy.intercept('POST', `/api/core/indicators*`).as('indicatorsInfo')
     cy.get('[data-test="indicator-form__submit-button"]').click().wait('@indicatorsInfo')
+  }
+  //Зарыбление
+  mortality(siteID, tankID, amount, biomass) {
+    cy.visit('/')
+    cy.get('.menu__indicators > .el-button').click()
+    cy.get('[data-test=indicator-form__type-picker]').click()
+    cy.get('[data-test="node-fishGroup"]').click()
+    cy.get('[data-test="node-mortality"]').click()
+    cy.get('[data-test="indicator-form__table-view-toggle"]').click()
+    cy.get('[data-test="tanks-cascader"]').click()
+    cy.get(`[data-test=node-site-${siteID}]`).click()
+    cy.get(`[data-test=node-tank-${tankID}]`).click()
+    cy.get('[for="tankId"]').click()
+    cy.get('[data-test="indicator-input"]').type(amount)
+    cy.get('[data-test="fish-biomass-delta-input"]').clear().type(biomass)
+    cy.intercept('GET', `/api/core/indicators/tank/${tankID}*`).as('tankInfo')
+    cy.get('[data-test="indicator-form__submit-button"]').click().wait('@tankInfo')
   }
 }
 

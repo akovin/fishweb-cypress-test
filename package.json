@@ -12,8 +12,7 @@
     "cy:run": "cypress run",
     "cy:run:spec": "cypress run --spec",
     "cy:run:chrome:headless": "cypress run --browser chrome --headless",
-    "cy:run:chrome:headless:spec": "cypress run --browser chrome --headless --spec",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "cy:run:chrome:headless:spec": "cypress run --browser chrome --headless --spec"
   },
   "author": "",
   "license": "ISC"
