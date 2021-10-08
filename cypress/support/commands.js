@@ -117,3 +117,12 @@ Cypress.Commands.add("removeTankByAPI", (tankID) => {
     expect(response.status).to.eq(200)
   })
 })
+// Cypress.Commands.add("stockingByAPI", (tankID) => {
+//   cy.request({
+//     method: "POST",
+//     url: '/api/core/indicators',
+//     body: [{"type":"seeding","timestamp":"2021-10-06T12:02:22.952Z","tankIds":["602e66b75d59620011055fd6"],"degreeDay":660.45,"fishBiomassDelta":99,"indicator":99,"unit":"pieces","seedingReason":"","comment":""}]
+//   }).then((response) => {
+//     expect(response.status).to.eq(200)
+//   })
+// })
