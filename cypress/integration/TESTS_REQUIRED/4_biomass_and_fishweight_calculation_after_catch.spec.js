@@ -5,7 +5,7 @@ let siteID
 let tankID
 const siteAndTankNamesTest = [Cypress.env('siteNameTest'), Cypress.env('tankNameTestFirst')]
 
-describe("biomass and fishweight calculation after stocking", () => {
+describe("biomass and fishweight calculation after catch", () => {
   beforeEach("login page and create site and tank", () => {
     cy.login()
     cy.removeAllTestEntities()
@@ -25,8 +25,8 @@ describe("biomass and fishweight calculation after stocking", () => {
   it("catch fishweight differs from tank fishweight", () => {
     enterIndicators.stocking(siteID, tankID, 4780, 11213.88)
     checkIndicators.checkIndicators(...siteAndTankNamesTest, '2,346', '4 780', '11 213,9')
-    enterIndicators.catch(siteID, tankID, 2256, 5775,36)
-    checkIndicators.checkIndicators(...siteAndTankNamesTest, '2,155', '2 524', '5 438,9')
+    enterIndicators.catch(siteID, tankID, 2256, 5775.36)
+    checkIndicators.checkIndicators(...siteAndTankNamesTest, '2,155', '2 524', '5 438,5')
   })
   afterEach("delete tank and site", () => {
     cy.removeTankByAPI(tankID).then(() => {

@@ -5,7 +5,7 @@ let siteID
 let tankID
 const siteAndTankNamesTest = [Cypress.env('siteNameTest'), Cypress.env('tankNameTestFirst')]
 
-describe("biomass and fishweight calculation after stocking", () => {
+describe("biomass and fishweight calculation after mortality", () => {
   beforeEach("login page and create site and tank", () => {
     cy.login()
     cy.removeAllTestEntities()
