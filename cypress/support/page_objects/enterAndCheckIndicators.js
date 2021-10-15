@@ -1,30 +1,8 @@
-// //приведение строк, содержащих другие символы к числу корректному, с точкой
-// function makeValidNumber(htmlIndicator) {
-//   const regex = /[\d,.−]/g
-//   const digitsWithDotOrComma = htmlIndicator.match(regex)
-//   //меняем запятую на точку, чтобы перобразование в число прошло успешно
-//   const indexOfComma = digitsWithDotOrComma.indexOf(',')
-//   digitsWithDotOrComma[indexOfComma] = '.'
-//   //меняем длинный минус со страницы на короткий(настоящий), чтобы перобразование в число прошло успешно
-//   const indexOfMinus = digitsWithDotOrComma.indexOf('−')
-//   digitsWithDotOrComma[indexOfMinus] = '-'
-//   let indicatorFinalFromPage = digitsWithDotOrComma.join('')
-//   indicatorFinalFromPage = Number(indicatorFinalFromPage)
-//   return indicatorFinalFromPage
-// }
-
 //приведение строк, содержащих другие символы к числу корректному, с точкой
 function makeValidNumber(htmlIndicator) {
   const regex = /[\d,.−]/g
   const digitsWithDotOrComma = htmlIndicator.match(regex)
-  //меняем запятую на точку, чтобы перобразование в число прошло успешно
-  // const indexOfComma = digitsWithDotOrComma.indexOf(',')
-  // digitsWithDotOrComma[indexOfComma] = '.'
-  //меняем длинный минус со страницы на короткий(настоящий), чтобы перобразование в число прошло успешно
-  // const indexOfMinus = digitsWithDotOrComma.indexOf('−')
-  // digitsWithDotOrComma[indexOfMinus] = '-'
   let indicatorFinalFromPage = digitsWithDotOrComma.join('')
-  // indicatorFinalFromPage = Number(indicatorFinalFromPage)
   return indicatorFinalFromPage
 }
 
