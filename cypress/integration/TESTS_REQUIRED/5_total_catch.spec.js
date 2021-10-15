@@ -20,9 +20,9 @@ describe("biomass and fishweight calculation after stocking", () => {
     enterIndicators.stocking(siteID, tankID, 2524, 5438.52 )
     checkIndicators.checkIndicators(...siteAndTankNamesTest, '2,155', '2 524', '5 438,5')
     enterIndicators.catch(siteID, tankID, 2520, 5166, true, 'Продажа' )
-    // checkIndicators.checkRecordFish(...siteAndTankNamesTest, 3 , 'Вылов', 'Поправка', '2 520', '−4', '2,155', '','5 429,901', '−8,619')
+    checkIndicators.checkRecordFish(...siteAndTankNamesTest, 3 , 'Вылов', 'Поправка', '2 520', '−4', '2,155', '','5 429,901', '−8,619')
     checkIndicators.checkRecordFish(...siteAndTankNamesTest, 1 , 'Вылов', 'Продажа', '0', '−2 520', 'n/a', '−2,05', '0', '−5 166')
-    // checkIndicators.checkRecordFish(...siteAndTankNamesTest, 2 , 'Навеска', 'Поправка', '2 520', '', '2,05', '−0,105', '5 166', '−263,901')
+    checkIndicators.checkRecordFish(...siteAndTankNamesTest, 2 , 'Навеска', 'Поправка', '2 520', '', '2,05', '−0,105', '5 166', '−263,901')
   })
   // it("catch fishweight differs from tank fishweight", () => {
   //   enterIndicators.stocking(siteID, tankID, 4780, 11213.88)
