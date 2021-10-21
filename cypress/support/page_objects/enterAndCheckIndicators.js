@@ -166,6 +166,22 @@ export class enterAllIndicators {
       }
     })
   }
+  feeding(siteID, tankID, amount, feedRatio) {
+    cy.visit('/')
+    cy.get('.menu__indicators > .el-button').click()
+    cy.get('[data-test=indicator-form__type-picker]').click()
+    cy.get('[data-test="node-feeding"]').click()
+    cy.get('[data-test="indicator-form__table-view-toggle"]').click()
+    cy.get('[data-test="tanks-cascader"]').click().wait(500)
+    cy.get(`[data-test=node-site-${siteID}]`).click()
+    cy.get(`[data-test=node-tank-${tankID}]`).parent().prev().click()
+    cy.get('[for="feedingHandbookId"]').click()
+    cy.get('[data-test="feed-producer-select"]').click()
+    cy.get('[data-test="feed-producer-option-5d0c916a3f8fc5002132f106"]').click()
+    cy.get('[data-test="indicator-input"] input').type(amount)
+    cy.get('[data-test="feed-ratio-input"] input').type(feedRatio)
+    cy.get('[data-test="indicator-form__submit-button"]').click()
+  }
 }
 
 export const checkIndicators = new checkAllIndicators()
