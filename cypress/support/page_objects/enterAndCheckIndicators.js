@@ -34,17 +34,19 @@ function compareTwoLocatorsWithValues (recordAll, valueAfterLocator, valueDiffer
 
 export class checkAllIndicators {
   //Проверка показателей полностью
-  checkIndicators(siteName, tankName, fishWeight, amount, biomass) {
+  checkIndicators(siteName, tankName, fishWeight, amount, biomass, temperature) {
     cy.visit('/')
     cy.intercept('GET', '/api/core/sites/**').as('siteInfo')
     cy.contains(siteName).click({ force: true }).wait('@siteInfo')
-    cy.contains(tankName).click({ force: true })
+    cy.intercept('GET', '/api/core/indicators/fish/change/tank*').as('tankInfo')
+    cy.contains(tankName).click({ force: true }).wait('@tankInfo')
     //проверка что индикатор не активен - не содержит в себе цифр, может быть n/a или ---
     const regexDigit = /\d+/g
     if (!regexDigit.test(fishWeight)) {
       cy.get('[data-test="tank-fish-weight-value"]').should('be.visible').invoke('text').should('contain', fishWeight)
     } else {
       cy.get('[data-test="tank-fish-weight-value"]').should('be.visible').invoke('text').then((htmlFishWeight) => {
+        //добавить эту проверку сюда   .should('have.css', 'background-color').and('equal', 'rgba(119, 142, 255, 0.24)')
         makeValidNumbersAndCompare(fishWeight, htmlFishWeight)
       })
     }
@@ -62,6 +64,15 @@ export class checkAllIndicators {
         makeValidNumbersAndCompare(biomass, htmlBiomass)
       })
     }
+    if(temperature) {
+      if (!temperature.match(regexDigit)) {
+        cy.get('[data-test="tank-temperature-value"]').should('be.visible').invoke('text').should('contain', temperature)
+      } else {
+        cy.get('[data-test="tank-temperature-value"]').invoke('text').then((htmlTemperature) => {
+          makeValidNumbersAndCompare(temperature, htmlTemperature)
+        })
+      }
+    }
   }
   checkRecordFish(siteName, tankName, numberOfRecord, nameOfRecord, reasonOfRecord,  amountAfter, amountDifference, fishWeightAfter, fishWeightDifference, biomassAfter, biomassDifference) {
     cy.visit('/')
@@ -76,6 +87,60 @@ export class checkAllIndicators {
       compareTwoLocatorsWithValues($recordAll, '.el-table_1_column_6 .cell', '.el-table_1_column_6 .cell .relative-value', fishWeightAfter, fishWeightDifference)
       compareTwoLocatorsWithValues($recordAll, '.el-table_1_column_7 .cell', '.el-table_1_column_7 .cell .relative-value', biomassAfter, biomassDifference)
     })
+  }
+  checkFeeding(nameOfMessage, siteID, tankID, feedProducerId, amount, feedingRatio, feedingTableId ) {
+    cy.visit('/')
+    cy.get('.menu__indicators > .el-button').click()
+    cy.get('[data-test=indicator-form__type-picker]').click()
+    cy.get('[data-test="node-feeding"]').click()
+    cy.get('[data-test="indicator-form__table-view-toggle"]').click()
+    cy.get('[data-test="tanks-cascader"]').click().wait(500)
+    cy.get(`[data-test=node-site-${siteID}]`).click()
+    cy.get(`[data-test=node-tank-${tankID}]`).parent().prev().click()
+    cy.get('[for="feedingHandbookId"]').click()
+    if(!(nameOfMessage == 'feedNotFillIn')){
+      cy.get('[data-test="feed-producer-select"]').click()
+      cy.get(`[data-test="feed-producer-option-${feedProducerId}"]`).click()
+    }
+
+    if(feedingTableId){
+      cy.get(`[data-test="feed-producer-handbook-select"]`).click()
+      cy.get(`[data-test="feed-producer-handbook-option-${feedingTableId}"]`).should('be.visible').click()
+      cy.get('[data-test="feeding-strategy-checkbox-handbook"]').click()
+    }
+
+    switch (nameOfMessage) {
+      case 'calculatedData':
+        cy.get('[data-test="indicator-input"] input').invoke('val').then(amountCalculated => {
+          expect(amount).to.equal(amountCalculated)
+        })
+        cy.get('[data-test="feed-ratio-input"] input').invoke('val').then(feedingRatioCalculated => {
+          expect(feedingRatio).to.equal(feedingRatioCalculated)
+        })
+        break
+      case 'tableNotFound':
+        cy.get('[data-test="feeding-strategy-checkbox-group"]').rightclick().wait(500)
+        // cy.pause()
+        cy.fixture('messages').as('messages').then((messages) => {
+          // cy.get('.el-popover__title').contains('Справочник').next().should('contain', messages.find(message => message.nameOfMessage == 'tableNotFound').messageText)
+          cy.get('.feeding-strategy-preview').contains('справочник не найден').should('contain', 'справочник не найден')
+        })
+        break
+      case 'feedNotFillIn':
+        cy.get('[data-test="feeding-strategy-checkbox-group"]').rightclick()
+        cy.fixture('messages').as('messages').then((messages) => {
+          cy.get('.feeding-strategy-preview').contains('справочник не найден').should('contain', 'справочник не найден')
+        })
+        break
+      case 'temperatureNotEntered':
+        cy.get('[data-test="feeding-strategy-checkbox-group"]').rightclick()
+        cy.fixture('messages').as('messages').then((messages) => {
+          cy.get('.el-popover__title').contains('Справочник').next().should('contain', 'температура не найдена')
+        })
+        break
+      default:
+        cy.log(`Sorry, we are out of ${nameOfMessage}.`)
+    }
   }
 }
 
@@ -166,7 +231,7 @@ export class enterAllIndicators {
       }
     })
   }
-  feeding(siteID, tankID, amount, feedRatio) {
+  feeding(siteID, tankID, feedProducerId, amount, feedRatio) {
     cy.visit('/')
     cy.get('.menu__indicators > .el-button').click()
     cy.get('[data-test=indicator-form__type-picker]').click()
@@ -177,9 +242,23 @@ export class enterAllIndicators {
     cy.get(`[data-test=node-tank-${tankID}]`).parent().prev().click()
     cy.get('[for="feedingHandbookId"]').click()
     cy.get('[data-test="feed-producer-select"]').click()
-    cy.get('[data-test="feed-producer-option-5d0c916a3f8fc5002132f106"]').click()
+    //ID Raisio aqua (5 мм) = 5d0c916a3f8fc5002132f106
+    cy.get(`[data-test="feed-producer-option-${feedProducerId}"]`).click()
     cy.get('[data-test="indicator-input"] input').type(amount)
     cy.get('[data-test="feed-ratio-input"] input').type(feedRatio)
+    cy.get('[data-test="indicator-form__submit-button"]').click()
+  }
+  temperature(siteID, tankID, temperature) {
+    cy.visit('/')
+    cy.get('.menu__indicators > .el-button').click()
+    cy.get('[data-test=indicator-form__type-picker]').click()
+    cy.get('[data-test="node-water"]').click()
+    cy.get('[data-test="indicator-form__table-view-toggle"]').click()
+    cy.get('[data-test="tanks-cascader"]').click()
+    cy.get(`[data-test=node-site-${siteID}]`).click()
+    cy.get(`[data-test=node-tank-${tankID}]`).parent().prev().click()
+    cy.get('.indicator-form__title').click()
+    cy.get('[data-test="temperature-input"] input').type(temperature)
     cy.get('[data-test="indicator-form__submit-button"]').click()
   }
 }

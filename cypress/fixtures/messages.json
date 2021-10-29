@@ -1,0 +1,18 @@
+[
+  {
+    "nameOfMessage" : "calculatedData",
+    "messageText" : null
+  },
+  {
+    "nameOfMessage" : "tableNotFound",
+    "messageText" : "cправочник не найден"
+  },
+  {
+    "nameOfMessage" : "feedNotFillIn",
+    "messageText" : "cправочник не найден"
+  },
+  {
+    "nameOfMessage" : "temperatureNotEntered",
+    "messageText" : "температура не найдена"
+  }
+]
