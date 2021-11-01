@@ -21,7 +21,7 @@ describe("daily feeding rate calculation, strategy handbook", () => {
     enterIndicators.temperature(siteID, tankID, 14)
     cy.fixture('feeds').as('feeds').then((feeds) => {
       cy.fixture('messages').as('messages').then((messages) => {
-        checkIndicators.checkFeeding(messages.find(message => message.nameOfMessage == 'calculatedData').nameOfMessage, siteID, tankID, feeds.find(feed => feed.feedProducerId == Cypress.env('feedNumberOneId')).feedProducerId, '9.4', '0.80', feeds.find(feed => feed.feedTableId == Cypress.env('feedTableNumberOneId')).feedTableId)
+        checkIndicators.checkFeeding(messages.find(message => message.name == 'calculatedData').name, siteID, tankID, feeds.find(feed => feed.id == Cypress.env('feedFirstId')).id, '9.4', '0.80', feeds.find(feed => feed.tableId == Cypress.env('feedTableFirstId')).tableId)
       })    
     })
   })
@@ -30,7 +30,7 @@ describe("daily feeding rate calculation, strategy handbook", () => {
     enterIndicators.temperature(siteID, tankID, 14)
     cy.fixture('feeds').as('feeds').then((feeds) => {
       cy.fixture('messages').as('messages').then((messages) => {
-        checkIndicators.checkFeeding(messages.find(message => message.nameOfMessage == 'tableNotFound').nameOfMessage, siteID, tankID, feeds.find(feed => feed.feedProducerId == Cypress.env('feedNumberTwoId')).feedProducerId, null, null, null)
+        checkIndicators.checkFeeding(messages.find(message => message.name == 'tableNotFound').name, siteID, tankID, feeds.find(feed => feed.id == Cypress.env('feedSecondId')).id, null, null, null)
       })
     })
   })
@@ -39,7 +39,7 @@ describe("daily feeding rate calculation, strategy handbook", () => {
     enterIndicators.temperature(siteID, tankID, 14)
     cy.fixture('feeds').as('feeds').then((feeds) => {
       cy.fixture('messages').as('messages').then((messages) => {
-        checkIndicators.checkFeeding(messages.find(message => message.nameOfMessage == 'feedNotFillIn').nameOfMessage, siteID, tankID, feeds.find(feed => feed.feedProducerId == Cypress.env('feedNumberTwoId')).feedProducerId, null, null, null)
+        checkIndicators.checkFeeding(messages.find(message => message.name == 'feedNotFillIn').name, siteID, tankID, feeds.find(feed => feed.id == Cypress.env('feedSecondId')).id, null, null, null)
       })
     })
   })
@@ -47,7 +47,7 @@ describe("daily feeding rate calculation, strategy handbook", () => {
     enterIndicators.stocking(siteID, tankID, 3600, 370.8)
     cy.fixture('feeds').as('feeds').then((feeds) => {
       cy.fixture('messages').as('messages').then((messages) => {
-        checkIndicators.checkFeeding(messages.find(message => message.nameOfMessage == 'temperatureNotEntered').nameOfMessage, siteID, tankID, feeds.find(feed => feed.feedProducerId == Cypress.env('feedNumberOneId')).feedProducerId, null, null, feeds.find(feed => feed.feedTableId == Cypress.env('feedTableNumberOneId')).feedTableId)
+        checkIndicators.checkFeeding(messages.find(message => message.name == 'temperatureNotEntered').name, siteID, tankID, feeds.find(feed => feed.id == Cypress.env('feedFirstId')).id, null, null, feeds.find(feed => feed.tableId == Cypress.env('feedTableFirstId')).tableId)
       })
     })
   })

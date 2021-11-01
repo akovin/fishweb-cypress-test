@@ -5,8 +5,13 @@
     "siteNameTest": "Участок для автотестов 1",
     "tankNameTestFirst": "Садок для автотестов 1",
     "tankNameTestSecond": "Садок для автотестов 2",
-    "feedNumberOneId": "60015e6a5425ef00110588c7",
-    "feedTableNumberOneId": "6059c69f8141cb0011c6b13e",
-    "feedNumberTwoId": "617a5d14aa5beb001169589f"
+    "feedFirstId": "60015e6a5425ef00110588c7",
+    "feedTableFirstId": "6059c69f8141cb0011c6b13e",
+    "feedSecondId": "617a5d14aa5beb001169589f",
+    "feedingPlanFirstName": "План Raisio"
+  },
+  "retries": {
+    "runMode": 2,
+    "openMode": 0
   }
 }

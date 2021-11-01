@@ -88,7 +88,7 @@ export class checkAllIndicators {
       compareTwoLocatorsWithValues($recordAll, '.el-table_1_column_7 .cell', '.el-table_1_column_7 .cell .relative-value', biomassAfter, biomassDifference)
     })
   }
-  checkFeeding(nameOfMessage, siteID, tankID, feedProducerId, amount, feedingRatio, feedingTableId ) {
+  checkFeeding(name, siteID, tankID, id, amount, feedingRatio, feedingTableId, feedingPlanId, dateTime) {
     cy.visit('/')
     cy.get('.menu__indicators > .el-button').click()
     cy.get('[data-test=indicator-form__type-picker]').click()
@@ -98,9 +98,20 @@ export class checkAllIndicators {
     cy.get(`[data-test=node-site-${siteID}]`).click()
     cy.get(`[data-test=node-tank-${tankID}]`).parent().prev().click()
     cy.get('[for="feedingHandbookId"]').click()
-    if(!(nameOfMessage == 'feedNotFillIn')){
+    
+    cy.get('[data-test="tanks-cascader"] .el-cascader__search-input').invoke('attr', 'placeholder').then(placeholderValue => {
+      console.log(placeholderValue + 'el-cascader__search-input')
+    })
+
+    if(feedingPlanId){
+      cy.get(`[data-test="feeding-plan-select"]`).click()
+      cy.get(`[data-test="feeding-plan-option-${feedingPlanId}"]`).click()
+      cy.get('[data-test="feeding-strategy-checkbox-handbook"]').click()
+    }
+
+    if(!(name == 'feedNotFillIn') && name !== null){
       cy.get('[data-test="feed-producer-select"]').click()
-      cy.get(`[data-test="feed-producer-option-${feedProducerId}"]`).click()
+      cy.get(`[data-test="feed-producer-option-${id}"]`).click()
     }
 
     if(feedingTableId){
@@ -109,7 +120,23 @@ export class checkAllIndicators {
       cy.get('[data-test="feeding-strategy-checkbox-handbook"]').click()
     }
 
-    switch (nameOfMessage) {
+    cy.intercept('GET', '/api/core/indicators/tank**').as('formInfo')
+
+    if (dateTime) {
+      cy.get('[data-test="indicator-form__timestamp-picker"] input').clear().type(`${dateTime}{enter}`).wait('@formInfo')
+    }
+
+    cy.wait(200)
+
+    cy.get('body').then($body => {
+      if(!$body.find('[data-test="tanks-cascader"] .el-cascader__tags span').length) {
+        cy.get('[data-test="tanks-cascader"]').click().wait(500)
+        cy.get(`[data-test=node-site-${siteID}]`).click()
+        cy.get(`[data-test=node-tank-${tankID}]`).parent().prev().click()
+      }
+    })
+
+    switch (name) {
       case 'calculatedData':
         cy.get('[data-test="indicator-input"] input').invoke('val').then(amountCalculated => {
           expect(amount).to.equal(amountCalculated)
@@ -122,7 +149,7 @@ export class checkAllIndicators {
         cy.get('[data-test="feeding-strategy-checkbox-group"]').rightclick().wait(500)
         // cy.pause()
         cy.fixture('messages').as('messages').then((messages) => {
-          // cy.get('.el-popover__title').contains('Справочник').next().should('contain', messages.find(message => message.nameOfMessage == 'tableNotFound').messageText)
+          // cy.get('.el-popover__title').contains('Справочник').next().should('contain', messages.find(message => message.name == 'tableNotFound').text)
           cy.get('.feeding-strategy-preview').contains('справочник не найден').should('contain', 'справочник не найден')
         })
         break
@@ -139,7 +166,7 @@ export class checkAllIndicators {
         })
         break
       default:
-        cy.log(`Sorry, we are out of ${nameOfMessage}.`)
+        cy.log(`Sorry, we are out of ${name}.`)
     }
   }
 }
@@ -231,7 +258,7 @@ export class enterAllIndicators {
       }
     })
   }
-  feeding(siteID, tankID, feedProducerId, amount, feedRatio) {
+  feeding(siteID, tankID, id, amount, feedRatio) {
     cy.visit('/')
     cy.get('.menu__indicators > .el-button').click()
     cy.get('[data-test=indicator-form__type-picker]').click()
@@ -243,7 +270,7 @@ export class enterAllIndicators {
     cy.get('[for="feedingHandbookId"]').click()
     cy.get('[data-test="feed-producer-select"]').click()
     //ID Raisio aqua (5 мм) = 5d0c916a3f8fc5002132f106
-    cy.get(`[data-test="feed-producer-option-${feedProducerId}"]`).click()
+    cy.get(`[data-test="feed-producer-option-${id}"]`).click()
     cy.get('[data-test="indicator-input"] input').type(amount)
     cy.get('[data-test="feed-ratio-input"] input').type(feedRatio)
     cy.get('[data-test="indicator-form__submit-button"]').click()
