@@ -37,9 +37,9 @@ export class checkAllIndicators {
   checkIndicators(siteName, tankName, fishWeight, amount, biomass, temperature) {
     cy.visit('/')
     cy.intercept('GET', '/api/core/sites/**').as('siteInfo')
-    cy.contains(siteName).click({ force: true }).wait('@siteInfo')
+    cy.contains(siteName, { timeout: 6000}).click({ force: true }).wait('@siteInfo')
     cy.intercept('GET', '/api/core/indicators/fish/change/tank*').as('tankInfo')
-    cy.contains(tankName).click({ force: true }).wait('@tankInfo')
+    cy.contains(tankName, { timeout: 6000}).click({ force: true }).wait('@tankInfo')
     //проверка что индикатор не активен - не содержит в себе цифр, может быть n/a или ---
     const regexDigit = /\d+/g
     if (!regexDigit.test(fishWeight)) {
