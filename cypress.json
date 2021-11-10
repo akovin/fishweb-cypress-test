@@ -3,11 +3,14 @@
   "ignoreTestFiles": "**/examples/**",
   "env": {
     "siteNameTest": "Участок для автотестов 1",
+    "siteTestConstantName": "Участок для автотестов постоянный",
+    "siteTestConstantId": "60263032ee7c660011f22dea",
+    "tankTestConstantId": "60263521ee7c660011f22e0b",
     "tankNameTestFirst": "Садок для автотестов 1",
     "tankNameTestSecond": "Садок для автотестов 2",
     "feedFirstId": "60015e6a5425ef00110588c7",
     "feedTableFirstId": "6059c69f8141cb0011c6b13e",
-    "feedSecondId": "617a5d14aa5beb001169589f",
+    "feedSecondId": "5d0c916a3f8fc5002132f106",
     "feedingPlanFirstName": "План Raisio"
   },
   "retries": {

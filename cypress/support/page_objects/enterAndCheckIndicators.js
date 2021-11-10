@@ -10,7 +10,7 @@ function makeValidNumbersAndCompare(indicatorExpected, indicatorFromPage) {
   const regex = /\d+/g
   const digitsExist = indicatorFromPage.match(regex)
   //Если значение не числовое,а , например n/a - то сравниваем на включение строки
-  if(digitsExist) {
+  if (digitsExist) {
     const amountNumber = makeValidNumber(indicatorExpected)
     const amountNumberFromPage = makeValidNumber(indicatorFromPage)
     expect(amountNumberFromPage).to.equal(amountNumber)
@@ -20,16 +20,16 @@ function makeValidNumbersAndCompare(indicatorExpected, indicatorFromPage) {
 }
 
 //специально написанная функция для проверки значений в записях об изменении рыбы
-function compareTwoLocatorsWithValues (recordAll, valueAfterLocator, valueDifferenceLocator, valueAfter, valueDifference) {
+function compareTwoLocatorsWithValues(recordAll, valueAfterLocator, valueDifferenceLocator, valueAfter, valueDifference) {
   let valueAfterFromPage = recordAll.find(valueAfterLocator).text()
   //Для того, чтобы отсечь второе значение разницы индикаторов, между символов (), отрезаем строку до символа (
   valueAfterFromPage = valueAfterFromPage.split('(')
   valueAfterFromPage = valueAfterFromPage[0]
   makeValidNumbersAndCompare(valueAfter, valueAfterFromPage)
-  if(recordAll.find(valueDifferenceLocator).length){
+  if (recordAll.find(valueDifferenceLocator).length) {
     const valueDifferenceFromPage = recordAll.find(valueDifferenceLocator).text()
     makeValidNumbersAndCompare(valueDifference, valueDifferenceFromPage)
-  } 
+  }
 }
 
 export class checkAllIndicators {
@@ -37,9 +37,9 @@ export class checkAllIndicators {
   checkIndicators(siteName, tankName, fishWeight, amount, biomass, temperature) {
     cy.visit('/')
     cy.intercept('GET', '/api/core/sites/**').as('siteInfo')
-    cy.contains(siteName, { timeout: 6000}).click({ force: true }).wait('@siteInfo')
+    cy.contains(siteName, { timeout: 6000 }).click({ force: true }).wait('@siteInfo')
     cy.intercept('GET', '/api/core/indicators/fish/change/tank*').as('tankInfo')
-    cy.contains(tankName, { timeout: 6000}).click({ force: true }).wait('@tankInfo')
+    cy.contains(tankName, { timeout: 6000 }).click({ force: true }).wait('@tankInfo')
     //проверка что индикатор не активен - не содержит в себе цифр, может быть n/a или ---
     const regexDigit = /\d+/g
     if (!regexDigit.test(fishWeight)) {
@@ -64,7 +64,7 @@ export class checkAllIndicators {
         makeValidNumbersAndCompare(biomass, htmlBiomass)
       })
     }
-    if(temperature) {
+    if (temperature) {
       if (!temperature.match(regexDigit)) {
         cy.get('[data-test="tank-temperature-value"]').should('be.visible').invoke('text').should('contain', temperature)
       } else {
@@ -74,7 +74,7 @@ export class checkAllIndicators {
       }
     }
   }
-  checkRecordFish(siteName, tankName, numberOfRecord, nameOfRecord, reasonOfRecord,  amountAfter, amountDifference, fishWeightAfter, fishWeightDifference, biomassAfter, biomassDifference) {
+  checkRecordFish(siteName, tankName, numberOfRecord, nameOfRecord, reasonOfRecord, amountAfter, amountDifference, fishWeightAfter, fishWeightDifference, biomassAfter, biomassDifference) {
     cy.visit('/')
     cy.intercept('GET', '/api/core/sites/**').as('siteInfo')
     cy.contains(siteName).click({ force: true }).wait('@siteInfo')
@@ -97,27 +97,35 @@ export class checkAllIndicators {
     cy.get('[data-test="tanks-cascader"]').click().wait(500)
     cy.get(`[data-test=node-site-${siteID}]`).click()
     cy.get(`[data-test=node-tank-${tankID}]`).parent().prev().click()
-    cy.get('[for="feedingHandbookId"]').click()
-    
+    cy.get('[placeholder="Введите комментарий"]').click()
+
     cy.get('[data-test="tanks-cascader"] .el-cascader__search-input').invoke('attr', 'placeholder').then(placeholderValue => {
       console.log(placeholderValue + 'el-cascader__search-input')
     })
 
-    if(feedingPlanId){
+    if (feedingPlanId) {
       cy.get(`[data-test="feeding-plan-select"]`).click()
       cy.get(`[data-test="feeding-plan-option-${feedingPlanId}"]`).click()
       cy.get('[data-test="feeding-strategy-checkbox-handbook"]').click()
     }
 
-    if(!(name == 'feedNotFillIn') && name !== null){
+    if (!(name == 'feedNotFillIn') && (name !== null) && (name !== 'calculatedDataWithoutFillInFeed')) {
       cy.get('[data-test="feed-producer-select"]').click()
       cy.get(`[data-test="feed-producer-option-${id}"]`).click()
     }
 
-    if(feedingTableId){
+    if (feedingTableId) {
       cy.get(`[data-test="feed-producer-handbook-select"]`).click()
       cy.get(`[data-test="feed-producer-handbook-option-${feedingTableId}"]`).should('be.visible').click()
       cy.get('[data-test="feeding-strategy-checkbox-handbook"]').click()
+    } else {
+      cy.log('feedingTableId not exist')
+      cy.get('[data-test="feed-producer-handbook-select"]').rightclick()
+      cy.get('body').then($body => {
+        if ($body.find('[data-test="feed-producer-handbook-select"] .el-icon-circle-close').length) {
+          cy.get('[data-test="feed-producer-handbook-select"] .el-icon-circle-close').click()
+        }
+      })
     }
 
     cy.intercept('GET', '/api/core/indicators/tank**').as('formInfo')
@@ -126,10 +134,8 @@ export class checkAllIndicators {
       cy.get('[data-test="indicator-form__timestamp-picker"] input').clear().type(`${dateTime}{enter}`).wait('@formInfo')
     }
 
-    cy.wait(200)
-
     cy.get('body').then($body => {
-      if(!$body.find('[data-test="tanks-cascader"] .el-cascader__tags span').length) {
+      if (!$body.find('[data-test="tanks-cascader"] .el-cascader__tags span').length) {
         cy.get('[data-test="tanks-cascader"]').click().wait(500)
         cy.get(`[data-test=node-site-${siteID}]`).click()
         cy.get(`[data-test=node-tank-${tankID}]`).parent().prev().click()
@@ -137,6 +143,15 @@ export class checkAllIndicators {
     })
 
     switch (name) {
+      case 'calculatedDataWithoutFillInFeed':
+        cy.get('[data-test="feeding-strategy-checkbox-feedingPlan"]').click()
+        cy.get('[data-test="indicator-input"] input').invoke('val').then(amountCalculated => {
+          expect(amount).to.equal(amountCalculated)
+        })
+        cy.get('[data-test="feed-ratio-input"] input').invoke('val').then(feedingRatioCalculated => {
+          expect(feedingRatio).to.equal(feedingRatioCalculated)
+        })
+        break
       case 'calculatedData':
         cy.get('[data-test="indicator-input"] input').invoke('val').then(amountCalculated => {
           expect(amount).to.equal(amountCalculated)
@@ -147,7 +162,6 @@ export class checkAllIndicators {
         break
       case 'tableNotFound':
         cy.get('[data-test="feeding-strategy-checkbox-group"]').rightclick().wait(500)
-        // cy.pause()
         cy.fixture('messages').as('messages').then((messages) => {
           // cy.get('.el-popover__title').contains('Справочник').next().should('contain', messages.find(message => message.name == 'tableNotFound').text)
           cy.get('.feeding-strategy-preview').contains('справочник не найден').should('contain', 'справочник не найден')
@@ -173,7 +187,7 @@ export class checkAllIndicators {
 
 export class enterAllIndicators {
   //Зарыбление
-  stocking(siteID, tankID, amount, biomass) {
+  seeding(siteID, tankID, amount, biomass, dateTime) {
     cy.visit('/')
     cy.get('.menu__indicators > .el-button').click()
     cy.get('[data-test=indicator-form__type-picker]').click()
@@ -186,6 +200,9 @@ export class enterAllIndicators {
     cy.get('[for="tankId"]').click()
     cy.get('[data-test="indicator-input"]').type(amount)
     cy.get('[data-test="fish-biomass-delta-input"]').type(biomass)
+    if (dateTime) {
+      cy.get('[data-test="indicator-form__timestamp-picker"] input').clear().type(`${dateTime}{enter}`)
+    }
     cy.intercept('GET', `/api/core/indicators/tank/${tankID}*`).as('tankInfo')
     cy.get('[data-test="indicator-form__submit-button"]').click().wait('@tankInfo')
   }
@@ -242,7 +259,7 @@ export class enterAllIndicators {
       cy.get('[for="tankId"]').click()
     }
     if (totalCatch) {
-      cy.get('[data-test="catching-everything-checkbox"] input').check({force:true})
+      cy.get('[data-test="catching-everything-checkbox"] input').check({ force: true })
     }
     if (catchReason) {
       cy.get('[data-test="catch-reason-input"] input').click()
@@ -253,8 +270,8 @@ export class enterAllIndicators {
     //проверяем наличие кнопки подтверждения действия
     const locatorOfPrimaryButton = '.el-message-box__btns > .el-button--primary'
     cy.get('body').then(($body) => {
-      if($body.find(locatorOfPrimaryButton ).length){
-        cy.get(locatorOfPrimaryButton ).click().wait('@tankInfo')
+      if ($body.find(locatorOfPrimaryButton).length) {
+        cy.get(locatorOfPrimaryButton).click().wait('@tankInfo')
       }
     })
   }
@@ -275,7 +292,7 @@ export class enterAllIndicators {
     cy.get('[data-test="feed-ratio-input"] input').type(feedRatio)
     cy.get('[data-test="indicator-form__submit-button"]').click()
   }
-  temperature(siteID, tankID, temperature) {
+  temperature(siteID, tankID, temperature, dateTime) {
     cy.visit('/')
     cy.get('.menu__indicators > .el-button').click()
     cy.get('[data-test=indicator-form__type-picker]').click()
@@ -286,6 +303,9 @@ export class enterAllIndicators {
     cy.get(`[data-test=node-tank-${tankID}]`).parent().prev().click()
     cy.get('.indicator-form__title').click()
     cy.get('[data-test="temperature-input"] input').type(temperature)
+    if (dateTime) {
+      cy.get('[data-test="indicator-form__timestamp-picker"] input').clear().type(`${dateTime}{enter}`)
+    }
     cy.get('[data-test="indicator-form__submit-button"]').click()
   }
 }

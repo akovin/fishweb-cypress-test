@@ -17,7 +17,7 @@ describe("daily feeding rate calculation, strategy handbook", () => {
     })
   })
   it("daily feeding rate calculation, strategy handbook", () => {
-    enterIndicators.stocking(siteID, tankID, 3600, 370.8)
+    enterIndicators.seeding(siteID, tankID, 3600, 370.8)
     enterIndicators.temperature(siteID, tankID, 14)
     cy.fixture('feeds').as('feeds').then((feeds) => {
       cy.fixture('messages').as('messages').then((messages) => {
@@ -26,7 +26,7 @@ describe("daily feeding rate calculation, strategy handbook", () => {
     })
   })
   it("daily feeding rate calculation, strategy handbook. feeding table does not exist", () => {
-    enterIndicators.stocking(siteID, tankID, 3600, 370.8)
+    enterIndicators.seeding(siteID, tankID, 3600, 370.8)
     enterIndicators.temperature(siteID, tankID, 14)
     cy.fixture('feeds').as('feeds').then((feeds) => {
       cy.fixture('messages').as('messages').then((messages) => {
@@ -35,7 +35,7 @@ describe("daily feeding rate calculation, strategy handbook", () => {
     })
   })
   it("daily feeding rate calculation, strategy handbook. feed does not fill in", () => {
-    enterIndicators.stocking(siteID, tankID, 3600, 370.8)
+    enterIndicators.seeding(siteID, tankID, 3600, 370.8)
     enterIndicators.temperature(siteID, tankID, 14)
     cy.fixture('feeds').as('feeds').then((feeds) => {
       cy.fixture('messages').as('messages').then((messages) => {
@@ -44,7 +44,7 @@ describe("daily feeding rate calculation, strategy handbook", () => {
     })
   })
   it("daily feeding rate calculation, strategy handbook. temperature did not enter", () => {
-    enterIndicators.stocking(siteID, tankID, 3600, 370.8)
+    enterIndicators.seeding(siteID, tankID, 3600, 370.8)
     cy.fixture('feeds').as('feeds').then((feeds) => {
       cy.fixture('messages').as('messages').then((messages) => {
         checkIndicators.checkFeeding(messages.find(message => message.name == 'temperatureNotEntered').name, siteID, tankID, feeds.find(feed => feed.id == Cypress.env('feedFirstId')).id, null, null, feeds.find(feed => feed.tableId == Cypress.env('feedTableFirstId')).tableId)

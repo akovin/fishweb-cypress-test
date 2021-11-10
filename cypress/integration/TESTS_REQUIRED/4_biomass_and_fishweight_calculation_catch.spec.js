@@ -17,13 +17,13 @@ describe("biomass and fishweight calculation after catch", () => {
     })
   })
   it("catch with the same fishweight in tank", () => {
-    enterIndicators.stocking(siteID, tankID, 4780, 11213.88)
+    enterIndicators.seeding(siteID, tankID, 4780, 11213.88)
     checkIndicators.checkIndicators(...siteAndTankNamesTest, '2,346', '4 780', '11 213,9')
     enterIndicators.catch(siteID, tankID, 2256)
     checkIndicators.checkIndicators(...siteAndTankNamesTest, '2,346', '2 524', '5 921,3')
   })
   it("catch fishweight differs from tank fishweight", () => {
-    enterIndicators.stocking(siteID, tankID, 4780, 11213.88)
+    enterIndicators.seeding(siteID, tankID, 4780, 11213.88)
     checkIndicators.checkIndicators(...siteAndTankNamesTest, '2,346', '4 780', '11 213,9')
     enterIndicators.catch(siteID, tankID, 2256, 5775.36)
     checkIndicators.checkIndicators(...siteAndTankNamesTest, '2,155', '2 524', '5 438,5')

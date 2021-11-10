@@ -18,7 +18,7 @@ describe("biomass and fishweight calculation after feeding", () => {
   })
   it("biomass and fishweight calculation after feeding", () => {
     cy.fixture('feeds').as('feeds').then((feeds) => {
-      enterIndicators.stocking(siteID, tankID, 3600, 370.8)
+      enterIndicators.seeding(siteID, tankID, 3600, 370.8)
       checkIndicators.checkIndicators(...siteAndTankNamesTest, '0,103', '3 600', '370,8')
       enterIndicators.feeding(siteID, tankID, Cypress.env('feedFirstId'), 15, 0.8)
       checkIndicators.checkRecordFish(...siteAndTankNamesTest, 1 , 'Кормление', '', '3 600', '', '0,108', '+0,005', '389,55', '+18,75')

@@ -17,13 +17,13 @@ describe("biomass and fishweight calculation after mortality", () => {
     })
   })
   it("mortality with the same fishweight in tank", () => {
-    enterIndicators.stocking(siteID, tankID, 4000, 540)
+    enterIndicators.seeding(siteID, tankID, 4000, 540)
     checkIndicators.checkIndicators(...siteAndTankNamesTest, '0,135', '4 000', '540')
     enterIndicators.mortality(siteID, tankID, 220, 29.7)
     checkIndicators.checkIndicators(...siteAndTankNamesTest, '0,135', '3 780', '510,3')
   })
   it("mortality fishweight differs from tank fishweight", () => {
-    enterIndicators.stocking(siteID, tankID, 4000, 540)
+    enterIndicators.seeding(siteID, tankID, 4000, 540)
     checkIndicators.checkIndicators(...siteAndTankNamesTest, '0,135', '4 000', '540')
     enterIndicators.mortality(siteID, tankID, 220, 22)
     checkIndicators.checkIndicators(...siteAndTankNamesTest, '0,137', '3 780', '518')
