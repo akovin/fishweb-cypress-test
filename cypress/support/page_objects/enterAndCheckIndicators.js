@@ -32,6 +32,23 @@ function compareTwoLocatorsWithValues(recordAll, valueAfterLocator, valueDiffere
   }
 }
 
+function setTimeDate(dateTime) {
+  if (dateTime) {
+    cy.get('[data-test="indicator-form__timestamp-picker"] input').clear()
+    let currentYear = false
+    cy.get('.el-date-picker__header > :nth-child(3)').invoke('text').then(year => {
+      //проверяем нужно ли менять год, доделать
+      if (year.includes('2021')) {
+        cy.get('[data-test="indicator-form__timestamp-picker"] input').type(`${dateTime}{enter}`)
+        currentYear = true
+      } else {
+        cy.get('.el-icon-arrow-left').click()
+        currentYear = false
+      }
+    })
+  }
+}
+
 export class checkAllIndicators {
   //Проверка показателей полностью
   checkIndicators(siteName, tankName, fishWeight, amount, biomass, temperature) {
@@ -130,9 +147,7 @@ export class checkAllIndicators {
 
     cy.intercept('GET', '/api/core/indicators/tank**').as('formInfo')
 
-    if (dateTime) {
-      cy.get('[data-test="indicator-form__timestamp-picker"] input').clear().type(`${dateTime}{enter}`).wait('@formInfo')
-    }
+    setTimeDate(dateTime)
 
     cy.get('body').then($body => {
       if (!$body.find('[data-test="tanks-cascader"] .el-cascader__tags span').length) {
@@ -200,9 +215,7 @@ export class enterAllIndicators {
     cy.get('[for="tankId"]').click()
     cy.get('[data-test="indicator-input"]').type(amount)
     cy.get('[data-test="fish-biomass-delta-input"]').type(biomass)
-    if (dateTime) {
-      cy.get('[data-test="indicator-form__timestamp-picker"] input').clear().type(`${dateTime}{enter}`)
-    }
+    setTimeDate(dateTime)
     cy.intercept('GET', `/api/core/indicators/tank/${tankID}*`).as('tankInfo')
     cy.get('[data-test="indicator-form__submit-button"]').click().wait('@tankInfo')
   }
@@ -303,9 +316,7 @@ export class enterAllIndicators {
     cy.get(`[data-test=node-tank-${tankID}]`).parent().prev().click()
     cy.get('.indicator-form__title').click()
     cy.get('[data-test="temperature-input"] input').type(temperature)
-    if (dateTime) {
-      cy.get('[data-test="indicator-form__timestamp-picker"] input').clear().type(`${dateTime}{enter}`)
-    }
+    setTimeDate(dateTime)
     cy.get('[data-test="indicator-form__submit-button"]').click()
   }
 }
