@@ -126,7 +126,7 @@ export class checkAllIndicators {
       cy.get('[data-test="feeding-strategy-checkbox-handbook"]').click()
     }
 
-    if (!(name == 'feedNotFillIn') && (name !== null) && (name !== 'calculatedDataWithoutFillInFeed')) {
+    if (!(name == 'feedNotFillIn') && (name !== null) && (name !== 'calculatedDataWithoutFillInFeed') && (name !== 'rulesNotFoundDate') && (name !== 'rulesNotFoundFishweight') && (name !== 'temperatureNotFound')) {
       cy.get('[data-test="feed-producer-select"]').click()
       cy.get(`[data-test="feed-producer-option-${id}"]`).click()
     }
@@ -166,6 +166,18 @@ export class checkAllIndicators {
         cy.get('[data-test="feed-ratio-input"] input').invoke('val').then(feedingRatioCalculated => {
           expect(feedingRatio).to.equal(feedingRatioCalculated)
         })
+        break
+      case 'rulesNotFoundDate':
+        cy.get('[data-test="feeding-strategy-checkbox-feedingPlan"]').click()
+        cy.get('.feeding-strategy-preview').should('contain', 'правил для даты не найдено')
+        break
+      case 'rulesNotFoundFishweight':
+        cy.get('[data-test="feeding-strategy-checkbox-feedingPlan"]').click()
+        cy.get('.feeding-strategy-preview').should('contain', 'правило для навески не найдено')
+        break
+      case 'temperatureNotFound':
+        cy.get('[data-test="feeding-strategy-checkbox-feedingPlan"]').click()
+        cy.get('.feeding-strategy-preview').should('contain', 'температура не найдена')
         break
       case 'calculatedData':
         cy.get('[data-test="indicator-input"] input').invoke('val').then(amountCalculated => {

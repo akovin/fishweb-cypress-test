@@ -155,3 +155,31 @@ Cypress.Commands.add("removeAllTestIndicatorsConstantTank", (tankID, indicatorsT
     }
   })
 })
+
+Cypress.Commands.add("createStockByAPI", (tankID) => {
+  cy.request({
+    method: "POST",
+    url: `/api/stocks`,
+    body: {name: "Склад для автотестов 1", comment: "", tankIds: []}
+  }).then((response) => {
+    expect(response.status).to.eq(200)
+  })
+})
+
+Cypress.Commands.add("removeAllTestStocksByAPI", (tankID) => {
+  cy.request({
+    method: "GET",
+    url: `/api/stocks`
+  }).then((response) => {
+    response.filter((elem) => {
+      return elem.name == Cypress.env('stockNameTest')
+    })
+    console.log(response)
+    // response.body.forEach(element => {
+    //   cy.request({
+    //     method: "DELETE",
+    //     url: `/api/stocks/${element.indicator.id}`
+    //   })
+    // })
+  })
+})

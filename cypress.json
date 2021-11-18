@@ -12,7 +12,9 @@
     "feedTableFirstId": "6059c69f8141cb0011c6b13e",
     "feedSecondId": "5d0c916a3f8fc5002132f106",
     "feedingPlanFirstName": "План Raisio",
-    "feedingPlanSecondName": "План Raisio: максимальный прирост"
+    "feedingPlanSecondName": "План Raisio: максимальный прирост",
+    "feedingPlanThirdName": "План Raisio: максимальный прирост 2",
+    "stockNameTest": "Склад для автотестов 1"
   },
   "retries": {
     "runMode": 2,
